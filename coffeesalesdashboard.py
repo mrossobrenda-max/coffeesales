@@ -203,12 +203,3 @@ if st.button("📄 Generate Full PDF Report"):
         ]:
             pdf.image(img, x=10, w=180)  # Adjust width to fit page
         pdf.output("coffeesalesdashboard.pdf")
-
-        # Offer download
-        with open("coffeesalesdashboard.pdf", "rb") as f:
-            st.download_button(
-                label="📥 Download Full Report",
-                data=f,
-                file_name="Coffee_Sales_Report.pdf",
-                mime="application/pdf"
-            )
