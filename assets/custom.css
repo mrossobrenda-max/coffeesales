@@ -1,0 +1,7 @@
+/* custom style for the default spinner to be green according to theme*/
+.custom-spinner .dash-spinner {
+    border-top-color: #198754 !important;
+    border-bottom-color: #198754 !important;
+    border-left-color: #198754 !important;
+    border-right-color: #198754 !important;
+    }
