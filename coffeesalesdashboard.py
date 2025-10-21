@@ -11,6 +11,89 @@ df = pd.read_csv("data/Coffe_sales.csv")
 st.title("☕Coffee Sales Dashboard")
 st.subheader("Analytical Summary")
 #visuals
+#functions to cater for report downloads
+def createheatmap(df):
+    corr = df[['hour_of_day', 'money', 'Weekdaysort', 'Monthsort']].corr()
+    fig = px.imshow(corr, text_auto='.3f', color_continuous_scale='Greens', aspect='auto',
+                         title='Correlation between time and coffee sales')
+    # resize the visual
+    fig.update_layout(
+        width=600,
+        height=400,
+    )
+    return fig
+def createregplot(df):
+    x = df['money']
+    y = df['hour_of_day']
+    # regplot to show correlation btn sales and hourofday
+    coeffs = np.polyfit(x, y, 1)
+    regline = np.poly1d(coeffs)
+    x_range = np.linspace(x.min(), x.max(), 20)
+    ypred = regline(x_range)
+    # create the scatter/regplot
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(x=x, y=ypred, mode='markers', name='Coffee Sales', marker=dict(color='green')))  # scatter datapoints
+    fig.add_trace(
+        go.Scatter(x=x_range, y=ypred, mode='lines', name='Hours of Day', line=dict(color='green')))  # regression line
+    fig.update_layout(
+        width=600,
+        height=400,
+        plot_bgcolor='white',
+        title='How hour of the day affects the Coffee sales',
+        xaxis_title='Sales',
+        yaxis_title='Hour of Day',
+        colorway=['#ff0000', '#00ff00', '#0000ff'],
+    )
+    return fig
+def createcountplot(df):
+    coffeecount = df['coffee_name'].value_counts().reset_index()
+    coffeecount.columns = ['Coffee_types', 'Count']
+    fig = px.bar(coffeecount, x='Coffee_types', y='Count', orientation='v',
+                       title='Coffee type sales distribution', color='Count', color_continuous_scale='Greens')
+    fig.update_layout(
+        width=600,
+        height=400,
+        plot_bgcolor='white',
+    )
+    return fig
+def createboxplot(df):
+    fig = px.box(df, x='Time_of_Day', y='money', color='Weekday',
+                     title='Coffee Sales Distribution by Week and Time',
+                     color_discrete_sequence=px.colors.sequential.Greens)
+    fig.update_layout(
+        width=600,
+        height=400,
+        plot_bgcolor='white',
+        xaxis_title='Time of Day',
+        yaxis_title='Money',
+    )
+    return fig
+def createpairplot(df):
+    fig = px.scatter_matrix(df, dimensions=['hour_of_day', 'money', 'Weekdaysort', 'Monthsort'],
+                                 title='Pairplot for Coffeee Sales', color='Time_of_Day',
+                                 color_discrete_sequence=px.colors.sequential.Greens)
+    fig.update_traces(diagonal_visible=True)
+    fig.update_layout(
+        width=800,
+        height=600,
+        plot_bgcolor='white',
+    )
+    return fig
+def createpiechart(df):
+    labels = ['Morning', 'Afternoon', 'Night']
+    td = df['Time_of_Day'].value_counts().reset_index()
+    td.columns = ['Time of Day', 'Count']
+    # create a dict for lookup on labels -> if we used dataframe like in seaborn it wouldnt work since it doesnt understand .get() fxn straightforwardly
+    td_dict = dict(zip(td['Time of Day'], td['Count']))
+    order = [td_dict.get(label, 0) for label in labels]
+    fig = px.pie(names=labels, values=order, title='Time of Day Distribution',
+                     color_discrete_sequence=px.colors.sequential.Greens)
+    fig.update_layout(
+        width=400,
+        height=400,
+    )
+    return fig
 corr = df[['hour_of_day','money','Weekdaysort','Monthsort']].corr()
 heat_fig = px.imshow(corr, text_auto='.3f',color_continuous_scale='Greens',aspect='auto',title='Correlation between time and coffee sales')
 #resize the visual
@@ -104,13 +187,12 @@ if selected_fig:
 if st.button("📄 Generate Full PDF Report"):
     with st.spinner("Generating report..."):
         # Save fresh copies of each chart
-        (heat_fig).write_image("heatmap.png")
-        (reg_fig).write_image("regression.png")
-        (count_fig).write_image("countdistribution.png")
-        (box_fig).write_image("boxplot.png")
-        (pair_fig).write_image("pairplot.png")
-        (pie_fig).write_image("piechart.png")
-
+        createheatmap(df).write_image("heatmap.png")
+        createregplot(df).write_image("regression.png")
+        createcountplot(df).write_image("countdistribution.png")
+        createboxplot(df).write_image("boxplot.png")
+        createpairplot(df).write_image("pairplot.png")
+        createpiechart(df).write_image("piechart.png")
         # Create PDF
         pdf = FPDF()
         pdf.add_page()
