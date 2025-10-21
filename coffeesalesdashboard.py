@@ -16,8 +16,7 @@ heat_fig.update_layout(
     width=600,
     height=400,
 )
-st.plotly_chart(heat_fig, use_container_width=True) #selectbox
-st.plotly_chart()
+st.plotly_chart(heat_fig, use_container_width=True)
 #regplot to show correlation btn sales and hourofday
 x = df['money']
 y  = df['hour_of_day']
