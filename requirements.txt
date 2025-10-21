@@ -3,4 +3,3 @@ plotly
 numpy
 streamlit
 fpdf
-kaleido>=0.2.1

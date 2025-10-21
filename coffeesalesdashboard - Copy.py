@@ -231,7 +231,6 @@ def download_fullreport (n_clicks):
     doc.build(element)
     pdf_buffer.seek(0)
     return dcc.send_bytes(pdf_buffer.read(),filename = 'Coffee Sales Dashboard Report.pdf'),message
-
 #run the main app))
 if __name__ == '__main__':
     app.run(debug=True,port=8080)
