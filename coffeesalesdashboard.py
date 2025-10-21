@@ -82,16 +82,16 @@ pie_fig.update_layout(
 )
 st.plotly_chart(pie_fig, use_container_width=True)
 charts = st.selectbox("Choose a chart to download",
-     ['📊Histogram','🥧Pie Chart','⏸️Previous Bar Chart','⏸️Current Bar Chart','📈Scatter Plot','🌡️Heat Map'])
+     ['📊Histogram','🥧Pie Chart','📊Box Plot','⏸️Pair Plot','📈Reg Plot','🌡️Heat Map'])
 if charts == '🥧Pie Chart':
         selected_fig = pie_fig
-elif charts== '📊Histogram':
-    selected_fig = hist_fig
-elif charts == '⏸️Previous Bar Chart':
-    selected_fig = score_fig
-elif charts == '⏸️Current Bar Chart':
-    selected_fig = currentscore_fig
-elif charts == '📈Scatter Plot':
+elif charts== '📊Box Plot':
+    selected_fig = box_fig
+elif charts == '⏸️Pair Plot':
+    selected_fig = pair_fig
+elif charts == '▮Count Plot':
+    selected_fig = count_fig
+elif charts == '📈Reg Plot':
     selected_fig = reg_fig
 elif charts == '🌡️Heat Map':
     selected_fig = heat_fig
