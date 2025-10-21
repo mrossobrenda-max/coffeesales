@@ -3,6 +3,8 @@ import plotly.express as px
 import numpy as np
 import plotly.graph_objects as go
 import streamlit as st
+import plotly.io as pio
+from fpdf import FPDF
 #load dataset
 df = pd.read_csv("data/Coffe_sales.csv")
 #streamlit
@@ -16,6 +18,7 @@ heat_fig.update_layout(
     width=600,
     height=400,
 )
+heat_fig.write_image("heatmap.png")
 st.plotly_chart(heat_fig, use_container_width=True)
 #regplot to show correlation btn sales and hourofday
 x = df['money']
@@ -39,6 +42,7 @@ reg_fig.update_layout(
     colorway=['#ff0000','#00ff00','#0000ff'],
 )
 st.plotly_chart(reg_fig, use_container_width=True)
+reg_fig.write_image("regression.png")
 #lets understand the coffeetypes sales using a countplot
 coffeecount = df['coffee_name'].value_counts().reset_index()
 coffeecount.columns = ['Coffee_types','Count']
@@ -49,6 +53,7 @@ count_fig.update_layout(
     plot_bgcolor='white',
 )
 st.plotly_chart(count_fig, use_container_width=True)
+count_fig.write_image("countdistribution.png")
 #visualize a boxplot
 box_fig = px.box(df, x='Time_of_Day', y='money', color = 'Weekday', title='Coffee Sales Distribution by Week and Time',color_discrete_sequence=px.colors.sequential.Greens)
 box_fig.update_layout(
@@ -58,6 +63,7 @@ box_fig.update_layout(
     xaxis_title='Time of Day',
     yaxis_title='Money',
 )
+box_fig.write_image("boxplot.png")
 st.plotly_chart(box_fig, use_container_width=True)
 #pairplot to see the relationship btn variables
 pair_fig = px.scatter_matrix(df,dimensions=['hour_of_day','money','Weekdaysort','Monthsort'],title = 'Pairplot for Coffeee Sales',color='Time_of_Day',color_discrete_sequence=px.colors.sequential.Greens)
@@ -67,6 +73,7 @@ pair_fig.update_layout(
     height=600,
     plot_bgcolor='white',
 )
+pair_fig.write_image("pairplot.png")
 st.plotly_chart(pair_fig, use_container_width=True)
 #pie chart to visualize time of day
 labels = ['Morning', 'Afternoon', 'Night']
@@ -80,6 +87,7 @@ pie_fig.update_layout(
     width=400,
     height=400,
 )
+pie_fig.write_image("piechart.png")
 st.plotly_chart(pie_fig, use_container_width=True)
 charts = st.selectbox("Choose a chart to download",
      ['🥧Pie Chart','📊Box Plot','⏸️Pair Plot','▮Count Plot','📈Scatter Plot','🌡️Heat Map'])
@@ -97,4 +105,15 @@ elif charts == '🌡️Heat Map':
     selected_fig = heat_fig
 else:
     selected_fig = None
-
+if selected_fig:
+    st.download_button("Download Chart as HTML", selected_fig.to_html(), file_name="chart.html")
+pdf = FPDF()
+pdf.add_page()
+pdf.set_font("Arial", size=12)
+pdf.image("heatmap.png", width=400, height=400)
+pdf.image("regression.png", width=400, height=400)
+pdf.image("countdistribution.png", width=400, height=400)
+pdf.image("pairplot.png", width=400, height=400)
+pdf.image("boxplot.png", width=400, height=400)
+pdf.image("piechart.png", width=400, height=400)
+pdf.output("coffeesalesdashboard.pdf")
