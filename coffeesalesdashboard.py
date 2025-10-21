@@ -187,7 +187,7 @@ if selected_fig:
 if st.button("📄 Generate Full PDF Report"):
     with st.spinner("Generating report..."):
         # Save fresh copies of each chart
-        #createheatmap(df).write_image("heatmap.png")
+        createheatmap(df).write_image("heatmap.png")
         createregplot(df).write_image("regression.png")
         createcountplot(df).write_image("countdistribution.png")
         createboxplot(df).write_image("boxplot.png")
