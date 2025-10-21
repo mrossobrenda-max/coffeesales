@@ -16,7 +16,6 @@ heat_fig.update_layout(
     width=600,
     height=400,
 )
-st.plotly_chart(heat_fig, use_container_width=True)
 #regplot to show correlation btn sales and hourofday
 x = df['money']
 y  = df['hour_of_day']
@@ -38,7 +37,6 @@ reg_fig.update_layout(
     yaxis_title='Hour of Day',
     colorway=['#ff0000','#00ff00','#0000ff'],
 )
-st.plotly_chart(reg_fig, use_container_width=True)
 #lets understand the coffeetypes sales using a countplot
 coffeecount = df['coffee_name'].value_counts().reset_index()
 coffeecount.columns = ['Coffee_types','Count']
@@ -58,7 +56,6 @@ box_fig.update_layout(
     xaxis_title='Time of Day',
     yaxis_title='Money',
 )
-st.plotly_chart(box_fig, use_container_width=True)
 #pairplot to see the relationship btn variables
 pair_fig = px.scatter_matrix(df,dimensions=['hour_of_day','money','Weekdaysort','Monthsort'],title = 'Pairplot for Coffeee Sales',color='Time_of_Day',color_discrete_sequence=px.colors.sequential.Greens)
 pair_fig.update_traces(diagonal_visible=True)
@@ -80,7 +77,6 @@ pie_fig.update_layout(
     width=400,
     height=400,
 )
-st.plotly_chart(pie_fig, use_container_width=True)
 charts = st.selectbox("Choose a chart to download",
      ['📊Histogram','🥧Pie Chart','📊Box Plot','⏸️Pair Plot','📈Reg Plot','🌡️Heat Map'])
 if charts == '🥧Pie Chart':
