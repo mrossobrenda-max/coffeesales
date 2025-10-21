@@ -18,7 +18,6 @@ heat_fig.update_layout(
     width=600,
     height=400,
 )
-heat_fig.write_image("heatmap.png")
 st.plotly_chart(heat_fig, use_container_width=True)
 #regplot to show correlation btn sales and hourofday
 x = df['money']
@@ -42,7 +41,6 @@ reg_fig.update_layout(
     colorway=['#ff0000','#00ff00','#0000ff'],
 )
 st.plotly_chart(reg_fig, use_container_width=True)
-reg_fig.write_image("regression.png")
 #lets understand the coffeetypes sales using a countplot
 coffeecount = df['coffee_name'].value_counts().reset_index()
 coffeecount.columns = ['Coffee_types','Count']
@@ -53,7 +51,6 @@ count_fig.update_layout(
     plot_bgcolor='white',
 )
 st.plotly_chart(count_fig, use_container_width=True)
-count_fig.write_image("countdistribution.png")
 #visualize a boxplot
 box_fig = px.box(df, x='Time_of_Day', y='money', color = 'Weekday', title='Coffee Sales Distribution by Week and Time',color_discrete_sequence=px.colors.sequential.Greens)
 box_fig.update_layout(
@@ -63,7 +60,6 @@ box_fig.update_layout(
     xaxis_title='Time of Day',
     yaxis_title='Money',
 )
-box_fig.write_image("boxplot.png")
 st.plotly_chart(box_fig, use_container_width=True)
 #pairplot to see the relationship btn variables
 pair_fig = px.scatter_matrix(df,dimensions=['hour_of_day','money','Weekdaysort','Monthsort'],title = 'Pairplot for Coffeee Sales',color='Time_of_Day',color_discrete_sequence=px.colors.sequential.Greens)
@@ -73,7 +69,6 @@ pair_fig.update_layout(
     height=600,
     plot_bgcolor='white',
 )
-pair_fig.write_image("pairplot.png")
 st.plotly_chart(pair_fig, use_container_width=True)
 #pie chart to visualize time of day
 labels = ['Morning', 'Afternoon', 'Night']
@@ -87,7 +82,6 @@ pie_fig.update_layout(
     width=400,
     height=400,
 )
-pie_fig.write_image("piechart.png")
 st.plotly_chart(pie_fig, use_container_width=True)
 charts = st.selectbox("Choose a chart to download",
      ['🥧Pie Chart','📊Box Plot','⏸️Pair Plot','▮Count Plot','📈Scatter Plot','🌡️Heat Map'])
@@ -107,13 +101,33 @@ else:
     selected_fig = None
 if selected_fig:
     st.download_button("Download Chart as HTML", selected_fig.to_html(), file_name="chart.html")
-pdf = FPDF()
-pdf.add_page()
-pdf.set_font("Arial", size=12)
-pdf.image("heatmap.png", width=400, height=400)
-pdf.image("regression.png", width=400, height=400)
-pdf.image("countdistribution.png", width=400, height=400)
-pdf.image("pairplot.png", width=400, height=400)
-pdf.image("boxplot.png", width=400, height=400)
-pdf.image("piechart.png", width=400, height=400)
-pdf.output("coffeesalesdashboard.pdf")
+if st.button("📄 Generate Full PDF Report"):
+    with st.spinner("Generating report..."):
+        # Save fresh copies of each chart
+        import copy
+        copy.deepcopy(heat_fig).write_image("heatmap.png")
+        copy.deepcopy(reg_fig).write_image("regression.png")
+        copy.deepcopy(count_fig).write_image("countdistribution.png")
+        copy.deepcopy(box_fig).write_image("boxplot.png")
+        copy.deepcopy(pair_fig).write_image("pairplot.png")
+        copy.deepcopy(pie_fig).write_image("piechart.png")
+
+        # Create PDF
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        for img in [
+            "heatmap.png", "regression.png", "countdistribution.png",
+            "boxplot.png", "pairplot.png", "piechart.png"
+        ]:
+            pdf.image(img, x=10, w=180)  # Adjust width to fit page
+        pdf.output("coffeesalesdashboard.pdf")
+
+        # Offer download
+        with open("coffeesalesdashboard.pdf", "rb") as f:
+            st.download_button(
+                label="📥 Download Full Report",
+                data=f,
+                file_name="Coffee_Sales_Report.pdf",
+                mime="application/pdf"
+            )
