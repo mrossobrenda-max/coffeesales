@@ -100,17 +100,16 @@ elif charts == '🌡️Heat Map':
 else:
     selected_fig = None
 if selected_fig:
-    st.download_button("Download Chart as HTML", selected_fig.to_html(), file_name="chart.html")
+    st.download_button("⬇️ Download Chart as HTML", selected_fig.to_html(), file_name="chart.html")
 if st.button("📄 Generate Full PDF Report"):
     with st.spinner("Generating report..."):
         # Save fresh copies of each chart
-        import copy
-        copy.deepcopy(heat_fig).write_image("heatmap.png")
-        copy.deepcopy(reg_fig).write_image("regression.png")
-        copy.deepcopy(count_fig).write_image("countdistribution.png")
-        copy.deepcopy(box_fig).write_image("boxplot.png")
-        copy.deepcopy(pair_fig).write_image("pairplot.png")
-        copy.deepcopy(pie_fig).write_image("piechart.png")
+        (heat_fig).write_image("heatmap.png")
+        (reg_fig).write_image("regression.png")
+        (count_fig).write_image("countdistribution.png")
+        (box_fig).write_image("boxplot.png")
+        (pair_fig).write_image("pairplot.png")
+        (pie_fig).write_image("piechart.png")
 
         # Create PDF
         pdf = FPDF()
