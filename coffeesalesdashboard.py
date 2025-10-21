@@ -97,5 +97,4 @@ elif charts == '🌡️Heat Map':
     selected_fig = heat_fig
 else:
     selected_fig = None
-if selected_fig:
-    st.plotly_chart(selected_fig, use_container_width=True)
+
